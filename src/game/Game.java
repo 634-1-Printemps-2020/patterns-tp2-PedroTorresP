@@ -13,6 +13,8 @@ public class Game {
     private Coin coin;
     private Map<Player, List<CoinState>> history;
 
+    private int total, smallest, biggest;
+
     public Game() {
         history = new HashMap<>();
     }
@@ -24,6 +26,8 @@ public class Game {
      */
     public void addPlayer(Player player) {
       // TODO: Votre code ici
+        List<CoinState> lst = new ArrayList<>();
+        history.put(player, lst);
     }
 
     /**
@@ -31,6 +35,29 @@ public class Game {
      */
     public void play() {
       // TODO: Votre code ici
+        total = 0;
+        smallest = -1;
+        biggest = -1;
+        coin = coin.getInstance();
+        rules = rules.getInstance();
+        List<CoinState> lstCS;
+        for(Player p : history.keySet()){
+             lstCS = history.get(p);
+            while (rules.checkWin(lstCS)==false){
+                p.play(coin);
+                lstCS.add(coin.getState());
+                total++;
+            }
+            history.replace(p,lstCS);
+            if(lstCS.size() < smallest){
+                smallest = lstCS.size();
+            }
+
+            if(lstCS.size() > biggest){
+                biggest = lstCS.size();
+            }
+
+        }
     }
 
     /**
@@ -40,7 +67,7 @@ public class Game {
      */
     public Statistics getStatistics() {
       // TODO: Votre code ici
-      return null;
+        return new Statistics(total/history.size(), smallest, biggest, total);
     }
 
     /**
@@ -50,7 +77,7 @@ public class Game {
      */
     public Map<Player, List<CoinState>> getHistory() {
       // TODO: Votre code ici
-      return null;
+      return new HashMap<>(history);
     }
 
 
@@ -62,7 +89,7 @@ public class Game {
      */
     public List<CoinState> getSpecificHistory(Player player) {
       // TODO: Votre code ici
-      return null;
+      return new ArrayList<>(history.get(player));
     }
 
 }
